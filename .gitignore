@@ -1,0 +1,11 @@
+# Foundry 缓存与编译产物
+cache/
+out/
+
+# 依赖库（由 forge install 管理，无需提交）
+lib/
+
+# 可选：忽略 IDE/系统文件
+.vscode/
+.idea/
+.DS_Store
