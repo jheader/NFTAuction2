@@ -48,3 +48,31 @@ func (m *DBModel) UpdateAuctionStatus(auctionID uint64, status string) error {
 			"update_time": time.Now().Unix(),
 		}).Error
 }
+
+// 获取拍卖列表
+func (m *DBModel) GetAuctionList(status string, offset int, limit int) ([]Auction, int64, error) {
+	var list []Auction
+	query := m.db.Model(&Auction{})
+
+	if status != "" {
+		query = query.Where("status = ?", status)
+	}
+
+	var total int64
+	query.Count(&total)
+
+	err := query.
+		Order("auction_id desc").
+		Offset(offset).
+		Limit(limit).
+		Find(&list).Error
+
+	return list, total, err
+}
+
+// 根据拍卖ID获取详情
+func (m *DBModel) GetAuctionByAuctionID(auctionID uint64) (*Auction, error) {
+	var item Auction
+	err := m.db.Where("auction_id = ?", auctionID).First(&item).Error
+	return &item, err
+}

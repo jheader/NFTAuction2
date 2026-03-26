@@ -13,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jheader/NFTAuction2/banckend/config"
-	"github.com/jheader/NFTAuction2/banckend/model"
+	"github.com/jheader/NFTAuction2/banckend/internal/model"
 )
 
 type AuctionEventService struct {
@@ -178,7 +178,7 @@ func (s *AuctionEventService) handleBidPlaced(log types.Log) {
 
 	// 更新最高价
 	_ = s.db.UpdateHighestBid(auctionId.Uint64(), event.Amount.String(), bidder.String())
-	fmt.Printf("💰 新出价: %s | 拍卖ID: %d\n", bidder, auctionId.Uint64())
+	fmt.Printf("新出价: %s | 拍卖ID: %d\n", bidder, auctionId.Uint64())
 }
 
 // 3. 拍卖结束

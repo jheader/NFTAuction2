@@ -16,3 +16,12 @@ func (m *DBModel) CreateBid(bid *Bid) error {
 	bid.BidTime = uint64(time.Now().Unix())
 	return m.db.Create(bid).Error
 }
+
+// 获取出价记录
+func (m *DBModel) GetBidListByAuctionID(auctionID uint64) ([]Bid, error) {
+	var list []Bid
+	err := m.db.Where("auction_id = ?", auctionID).
+		Order("id desc").
+		Find(&list).Error
+	return list, err
+}
