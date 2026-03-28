@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jheader/NFTAuction2/banckend/config"
@@ -45,5 +48,17 @@ func main() {
 	}
 	// 6. 启动服务
 	fmt.Printf("服务启动: 0.0.0.0:%s\n", cfg.HTTPPort)
-	_ = r.Run(":" + cfg.HTTPPort)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	go func() {
+		<-quit
+		fmt.Println("正在关闭服务...")
+		eventService.Stop()
+		os.Exit(0)
+	}()
+	if err := r.Run(":" + cfg.HTTPPort); err != nil {
+		eventService.Stop()
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
